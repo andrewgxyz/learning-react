@@ -1,0 +1,23 @@
+services:
+  nodejs:
+    restart: unless-stopped
+    build:
+      context: ./
+      dockerfile: nodejs.dockerfile
+      target: base
+    volumes:
+      - type: bind
+        source: ./mern_skeleton
+        target: /usr/src/app
+    depends_on:
+      - mongo
+    expose: 
+      - 8000:8020
+      - 8000:8040
+  mongo:
+    restart: unless-stopped
+    image: mongo:4.2.0
+    volumes:
+      - ./data:/data/db
+    expose:
+      - 27017
