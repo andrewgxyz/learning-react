@@ -5,7 +5,7 @@ import compress from 'compression'
 import cors from 'cors'
 import helmet from 'helmet'
 import config from '../config/config'
-import mongoose from 'mongoose'
+import Template from './../template'
 
 const app = express()
 
@@ -15,6 +15,10 @@ app.use(cookieParser())
 app.use(compress())
 app.use(cors())
 app.use(helmet())
+
+app.get('/', (req, res) => {
+  res.status(200).send(Template())
+})
 
 app.listen(config.port, (err) => {
   if (err) {
