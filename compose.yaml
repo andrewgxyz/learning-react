@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   nodejs:
     restart: unless-stopped
@@ -5,6 +7,8 @@ services:
       context: ./
       dockerfile: nodejs.dockerfile
       target: base
+    environment:
+      - MONGODB_URL=mongodb://localhost:27017/mernproject
     volumes:
       - type: bind
         source: ./mern_skeleton
@@ -13,11 +17,24 @@ services:
       - mongo
     ports: 
       - 4000:80
+    networks:
+      - node-network
   mongo:
     restart: unless-stopped
     image: mongo:4.2.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
     volumes:
       - type: volume
+        source: dbdata
         target: /data/db
-    expose:
-      - 27017
+    ports:
+      - 27017:27017
+    networks:
+      - node-network
+volumes:
+  dbdata:
+networks:
+  node-network:
+    driver: bridge
