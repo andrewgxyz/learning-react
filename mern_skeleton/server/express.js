@@ -1,4 +1,5 @@
 import express from 'express'
+import http from 'http'
 import bodyParser from 'body-parser'
 import cookieParser from 'cookie-parser'
 import compress from 'compression'
@@ -17,14 +18,12 @@ app.use(cors())
 app.use(helmet())
 
 app.get('/', (req, res) => {
-  res.status(200).send(Template())
+  return res.status(200).send(Template())
 })
 
-app.listen(config.port, (err) => {
+http.createServer(app).listen(config.port, '0.0.0.0', (err) => {
   if (err) {
     console.log(err)
   }
   console.info('Server started on port %s', config.port)
 })
-
-export default app

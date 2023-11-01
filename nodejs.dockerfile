@@ -16,7 +16,6 @@ RUN apt update && apt install -y \
         software-properties-common \
         sudo \
         vim \
-        mariadb-client \
         xz-utils
 
 ENV NODE_VER='v13.12.0'
@@ -39,6 +38,6 @@ COPY ./mern_skeleton /usr/src/app
 RUN npm i
 RUN npm i -g nodemon webpack yarn
 
-EXPOSE 8020 8040
+EXPOSE 80 4000
 
 CMD ["tail", "-f", "/dev/null"]
