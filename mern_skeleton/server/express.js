@@ -6,11 +6,22 @@ import compress from 'compression'
 import cors from 'cors'
 import helmet from 'helmet'
 
+import devBundle from './devBundle'
 import userRoutes from './routes/user.routes'
 import authRoutes from './routes/auth.routes'
 
+import React from 'react'
+import ReactDOMServer from 'react-dom/server'
+import StaticRouter from 'react-router-dom/StaticRouter'
+import MainRouter from './../client/MainRouter'
+import Template from '../template'
+
+import { ServerStyleSheets, ThemeProvider } from '@material-ui/styles'
+import theme from './../client/theme'
+
 const CURRENT_WORKING_DIR = process.cwd()
 const app = express()
+devBundle.compile(app)
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
@@ -31,6 +42,31 @@ app.use((err, req, res, next) => {
     res.status(400).json({"error": err.name + ": " + err.message})
     console.log(err)
   }
+})
+
+app.get('*', (req, res) => {
+  // Generate CSS Styles from Material-UI
+  const sheets = new ServerStyleSheets()
+  const context = {}
+
+  // Use renderToString to generate parkup
+  const markup = ReactDOMServer.renderToString(
+    sheets.collect(<StaticRouter location={req.url} context={context}>
+      <ThemeProvider theme={theme}><MainRouter/></ThemeProvider>
+    </StaticRouter>)
+  )
+
+  // Return template with markup and css styles
+  if (context.url) {
+    return res.redirect(303, context.url)
+  }
+
+  const css = sheets.toString()
+
+  res.status(200).send(Template({
+    markup: markup,
+    css: css
+  }))
 })
 
 export default app

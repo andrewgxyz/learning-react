@@ -1,6 +1,6 @@
 import webpack from 'webpack'
-import webpackMiddleware from 'webpack-dev-middleware'
 import webpackConfig from './../webpack.config.client'
+import webpackMiddleware from 'webpack-dev-middleware'
 import webpackHotMiddleware from 'webpack-hot-middleware'
 
 const compile = (app) => {
