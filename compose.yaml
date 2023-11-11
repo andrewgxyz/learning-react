@@ -1,6 +1,21 @@
 version: '3.8'
 
 services:
+  mongo:
+    restart: always
+    image: mongo:4.2.0
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpassword
+      MONGO_INITDB_DATABASE: mernproject
+    volumes:
+      - ./data/mongo/001_users.js:/docker-entrypoint-initdb.d/001_users.js:ro
+      - mongodb:/data/db
+      - mongodb_config:/data/configdb
+    ports:
+      - 27017:27017
+    networks:
+      - node-network
   nodejs:
     restart: unless-stopped
     build:
@@ -8,7 +23,7 @@ services:
       dockerfile: nodejs.dockerfile
       target: base
     environment:
-      - MONGODB_URL=mongodb://localhost:27017/mernproject
+      MONGO_URI: mongodb://root:rootpassword@mongo:27017/mernproject?authSource=admin
     volumes:
       - type: bind
         source: ./mern_skeleton
@@ -19,22 +34,9 @@ services:
       - 4000:80
     networks:
       - node-network
-  mongo:
-    restart: unless-stopped
-    image: mongo:4.2.0
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: rootpassword
-    volumes:
-      - type: volume
-        source: dbdata
-        target: /data/db
-    ports:
-      - 27017:27017
-    networks:
-      - node-network
 volumes:
-  dbdata:
+  mongodb:
+  mongodb_config:
 networks:
   node-network:
     driver: bridge
