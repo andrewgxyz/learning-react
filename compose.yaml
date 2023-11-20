@@ -1,5 +1,12 @@
 version: '3.8'
 
+x-shared-envs: &envs
+  DB_HOST: mongo
+  DB_PORT: 27017
+  DB_DATABASE: mernproject
+  DB_USERNAME: root
+  DB_PASSWORD: rootpassword
+
 services:
   mongo:
     restart: always
@@ -23,7 +30,7 @@ services:
       dockerfile: nodejs.dockerfile
       target: base
     environment:
-      MONGO_URI: mongodb://root:rootpassword@mongo:27017/mernproject?authSource=admin
+      <<: *envs
     volumes:
       - type: bind
         source: ./mern_skeleton
