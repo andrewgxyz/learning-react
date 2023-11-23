@@ -8,10 +8,29 @@ x-shared-envs: &envs
   DB_PASSWORD: rootpassword
 
 services:
+  nodejs:
+    build:
+      context: ./
+      dockerfile: nodejs.dockerfile
+      target: base
+    restart: unless-stopped
+    volumes:
+      - type: bind
+        source: ./social-media
+        target: /usr/src/app
+    env_file:
+      - ./social-media/.env
+    environment:
+      <<: *envs
+    depends_on:
+      - mongo
+    ports: 
+      - 4000:80
   mongo:
     restart: always
     image: mongo:4.2.0
     environment:
+      <<: *envs
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
       MONGO_INITDB_DATABASE: mernproject
@@ -21,29 +40,6 @@ services:
       - mongodb_config:/data/configdb
     ports:
       - 27017:27017
-    networks:
-      - node-network
-  nodejs:
-    restart: unless-stopped
-    build:
-      context: ./
-      dockerfile: nodejs.dockerfile
-      target: base
-    environment:
-      <<: *envs
-    volumes:
-      - type: bind
-        source: ./mern_skeleton
-        target: /usr/src/app
-    depends_on:
-      - mongo
-    ports: 
-      - 4000:80
-    networks:
-      - node-network
 volumes:
   mongodb:
   mongodb_config:
-networks:
-  node-network:
-    driver: bridge
