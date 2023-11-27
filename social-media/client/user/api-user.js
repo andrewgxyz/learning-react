@@ -53,7 +53,7 @@ const update = async (params, credentials, user) => {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + credentials.t,
       },
-      body: JSON.stringify(user)
+      body: user
     })
 
     return await res.json()
@@ -71,6 +71,43 @@ const remove = async (params, credentials) => {
         "Content-Type": "application/json",
         "Authorization": "Bearer " + credentials.t,
       },
+    })
+
+    return await res.json()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+
+const follow = async (params, credentials, followId) => {
+  try {
+    let res = await fetch('/api/users/follow', {
+      method: 'PUT',
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({userId: params.userId, followId: followId})
+    })
+
+    return await res.json()
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+const unfollow = async (params, credentials, unfollowId) => {
+  try {
+    let res = await fetch('/api/users/unfollow', {
+      method: 'PUT',
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + credentials.t,
+      },
+      body: JSON.stringify({userId: params.userId, unfollowId: unfollowId})
     })
 
     return await res.json()

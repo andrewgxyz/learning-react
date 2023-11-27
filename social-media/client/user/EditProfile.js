@@ -1,6 +1,7 @@
 import {useState} from "react"
 import auth from '../auth/auth-helper'
 import {update} from './api-user'
+import { Button } from "@material-ui/core"
 
 export default function EditProfile({match}) {
   const [values, setValues] = useState({
@@ -12,10 +13,19 @@ export default function EditProfile({match}) {
   })
 
   const handleChange = name => event => {
-    setValues({...values, [name]: event.target.value})
+    const value = name === 'photo'
+      ? event.target.files[0] 
+      : event.target.value 
+    setValues({...values, [name]: value})
   }
 
   const clickSumbit = () => {
+    let userData = new FormData()
+    values.name && userData.append('name', values.name)
+    values.email && userData.append('email', values.email)
+    values.password && userData.append('password', values.password)
+    values.about && userData.append('about', values.about)
+    values.photo && userData.append('photo', values.photo)
     const jwt = auth.isAuthenticated()
     const user = {
       name: values.name || undefined,
@@ -27,7 +37,7 @@ export default function EditProfile({match}) {
     update(
       {userId: match.params.userId},
       {t: jwt.token},
-      user
+      userData
     ).then((data) => {
       if (data.error) {
         setValues({...values, error: data.error})
@@ -44,6 +54,14 @@ export default function EditProfile({match}) {
       <Card className={classes.card}>
         <CardContent>
           <Typography variant="h6" className={classes.title}>Edit Profile</Typography>
+          <span className={classes.filename}>
+            {values.photo ? values.photo.name: ''}
+          </span>
+          <input accept="image/*" type="file" onChange={handleChange('photo')} style={{display: 'none'}} id="icon-button-file"/>
+          <label htmlFor="icon-button-file">
+            <Button variant="contained" color="default" component="span">Upload <FileUpload/></Button>
+          </label>
+          
           <TextField id="name" label="Name" className={classes.textField} value={values.name} onChange={handleChange('name')} margin="normal"/><br/>
           <TextField id="email" type="email" label="email" className={classes.textField} value={values.email} onChange={handleChange('email')} margin="normal"/><br/>
           <TextField id="multiline-flexible" type="text" label="About" className={classes.textField} value={values.about} onChange={handleChange('about')} margin="normal" multiline rows="2"/><br/>

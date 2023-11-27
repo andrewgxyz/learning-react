@@ -7,6 +7,9 @@ import DeleteUser from "./DeleteUser"
 export default function Profile({match}) {
   const [user, setUser] = useState({})
   const [redirectToSignin, setRedirectToSignin] = useState(false)
+  const photoUrl = user._id 
+    ? `/api/users/photo/${user._id}?${new Date().getTime()}`
+    : `/api/users/defaultPhoto`
 
   useEffect(() => {
     const abortCtrl = new AbortController()
@@ -39,7 +42,7 @@ export default function Profile({match}) {
       <List dense>
         <ListItem>
           <ListItemAvatar>
-            <Avatar>
+            <Avatar src={photoUrl}>
               <Person/>
             </Avatar>
           </ListItemAvatar>
