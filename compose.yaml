@@ -3,7 +3,7 @@ version: '3.8'
 x-shared-envs: &envs
   DB_HOST: mongo
   DB_PORT: 27017
-  DB_DATABASE: mernproject
+  DB_DATABASE: social-media
   DB_USERNAME: root
   DB_PASSWORD: rootpassword
 
@@ -33,7 +33,7 @@ services:
       <<: *envs
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootpassword
-      MONGO_INITDB_DATABASE: mernproject
+      MONGO_INITDB_DATABASE: social-media
     volumes:
       - ./data/mongo/001_users.js:/docker-entrypoint-initdb.d/001_users.js:ro
       - mongodb:/data/db
