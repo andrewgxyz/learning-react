@@ -5,14 +5,15 @@ import {ThemeProvider} from '@material-ui/styles'
 import {hot} from 'react-hot-loader'
 import theme from './theme'
 
-React.useEffect(() => {
-  const jssStyles = document.getElementById('jss-server-side')
-  if (jssStyles) {
-    document.body.removeChild(jssStyles)
-  }
-})
 
 const App = () => {
+  React.useEffect(() => {
+    const jssStyles = document.getElementById('jss-server-side')
+    if (jssStyles) {
+      document.body.removeChild(jssStyles)
+    }
+  })
+
   return (
     <BrowserRouter>
       <ThemeProvider theme={theme}>
